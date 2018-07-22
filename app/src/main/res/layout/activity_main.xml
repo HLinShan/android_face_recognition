@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <Button
+        android:id="@+id/bt_startfacenet"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/bt_downfeature"
+        android:layout_centerHorizontal="true"
+        android:text="开始人脸识别"
+        tools:layout_editor_absoluteX="154dp"
+        tools:layout_editor_absoluteY="235dp" />
+
+    <EditText
+        android:id="@+id/et_geturl"
+        android:layout_width="490dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="18dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="http://youkangbao.cn/ykb/back/checkin/add.php" />
+
+    <Button
+        android:id="@+id/bt_downfeature"
+        android:layout_width="174dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/et_geturl"
+        android:layout_marginTop="96dp"
+        android:text="下载feature表"
+        android:layout_alignLeft="@+id/et_geturl" />
+
+    <Button
+        android:id="@+id/bt_deletefeature"
+        android:layout_width="172dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/et_geturl"
+        android:layout_marginTop="164dp"
+        android:text="删除feature表" />
+
+    <Button
+        android:id="@+id/bt_open"
+        android:layout_width="188dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/et_geturl"
+        android:layout_marginTop="246dp"
+        android:text="打开继电器" />
+
+
+</RelativeLayout>

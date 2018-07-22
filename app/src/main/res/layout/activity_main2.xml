@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Main2Activity">
+
+    <SurfaceView
+        android:id="@+id/surfaceView"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="bottom"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="120dp"
+        android:layout_marginBottom="42dp"
+        android:text="TextView" />
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="1.5dp"
+        android:layout_height="500dp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="50dp"
+        android:background="#f20a0a" />
+
+    <View
+        android:id="@+id/view2"
+        android:layout_width="1.5dp"
+        android:layout_height="500dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="415dp"
+        android:background="#f20a0a"/>
+
+    <View
+        android:id="@+id/view3"
+        android:layout_width="350dp"
+        android:layout_height="1.5dp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="50dp"
+        android:background="#f20a0a"/>
+
+    <View
+        android:id="@+id/view4"
+        android:layout_width="350dp"
+        android:layout_height="1.5dp"
+        android:layout_marginLeft="65dp"
+        android:layout_marginTop="550dp"
+        android:background="#f20a0a"/>
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="119dp"
+        android:layout_height="143dp"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="0dp"
+        app:srcCompat="@android:color/holo_blue_bright"  />
+</FrameLayout>
