@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private OutputStream mOutputStream4;
     private Handler handler;
 //    public  String serverurl="http://youkangbao.cn/ykb/back/checkin/add.php";
-
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @SuppressLint({"WrongViewCast", "WrongConstant"})
     @Override
@@ -127,20 +126,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }catch (Exception e1)
         {//如果下载文件有异常就使用默认的。
             Toast.makeText(this, "下载Info和feature文件异常，将使用默认配置",3000).show();
-//            Intent intent = new Intent(MainActivity.this,Main2Activity.class);
-//            //给第二个界面传 文件地址
-//            String downloadfilefromserver=updownfile.set_DownCsvFileName(outputfiledir);
-//             //文件下载存在
-//                //转界面 传参数 和 已下载的特征文件地址
-//            intent.putExtra("downloadfeaturefilefromserver", downloadfilefromserver);
-//            intent.putExtra("uploaduseridtoserverurl", t5.getText().toString());
-//            intent.putExtra("t0", t0.getText().toString());
-//            intent.putExtra("t1", t1.getText().toString());
-//            intent.putExtra("t2", t2.getText().toString());
-//            Log.i("xxx","下载异常跳转到第二个界面中，传递默认参数");
-//            startActivity(intent);
         }
-
         //如果feature 和 info 都在的话就跳转到下一个界面人脸识别
         int para_result;
         try {
@@ -163,8 +149,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                String passString = et_geturl.getText().toString();
                     //给第二个界面传 文件地址
                     String downloadfilefromserver=updownfile.set_DownCsvFileName(outputfiledir);
-
-//                String downloadfilefromserver=Environment.getExternalStorageDirectory()+"/sss/temp.csv";
                         //转界面 传参数 和 已下载的特征文件地址
                         intent.putExtra("downloadfeaturefilefromserver", downloadfilefromserver);
                         intent.putExtra("uploaduseridtoserverurl", t5.getText().toString());
@@ -190,68 +174,64 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bt_startfacenet://转到打开摄像头第二个界面
                 int para_result;
                 try {
-                    para_result = readtxt.judge_Info(t0,t1,t2);
+                    para_result = readtxt.judge_Info(t0, t1, t2);
 
                     //根据返回的int在toast中输出结果
-                    switch (para_result){
+                    switch (para_result) {
                         case 1:
-                            Toast.makeText(MainActivity.this,"计时器1的有效设置范围为1-10秒",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "计时器1的有效设置范围为1-10秒", Toast.LENGTH_SHORT).show();
                             break;
                         case 2:
-                            Toast.makeText(MainActivity.this,"计时器2的有效设置范围为1-10秒",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "计时器2的有效设置范围为1-10秒", Toast.LENGTH_SHORT).show();
                             break;
                         case 3:
-                            Toast.makeText(MainActivity.this,"阈值的有效设置范围为0-1.1",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(MainActivity.this, "阈值的有效设置范围为0-1.1", Toast.LENGTH_SHORT).show();
                             break;
                         case 4:
-                            Toast.makeText(MainActivity.this,"参数正确",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this,Main2Activity.class);
-                            //传递字符串
-//                String passString = et_geturl.getText().toString();
-                            //给第二个界面传 文件地址
-//                String downloadfilefromserver=get_OutPutDownLoadDir()+"20131UserInfo_downloadfile.csv";
-                            String downloadfilefromserver=updownfile.set_DownCsvFileName(outputfiledir);
-
-//                String downloadfilefromserver=Environment.getExternalStorageDirectory()+"/sss/temp.csv";
-                            File objFile = new File(downloadfilefromserver);
-                            if (objFile.exists()) {   //文件下载存在
-                                //转界面 传参数 和 已下载的特征文件地址
-                                intent.putExtra("downloadfeaturefilefromserver", downloadfilefromserver);
-                                intent.putExtra("uploaduseridtoserverurl", t5.getText().toString());
-                                intent.putExtra("t0", t0.getText().toString());
-                                intent.putExtra("t1", t1.getText().toString());
-                                intent.putExtra("t2", t2.getText().toString());
-                                startActivity(intent);
-                            }
-                            else {
-                                Toast.makeText(this, "请下载excel文件",3000).show();
-                            }
-                            break;
+                            Toast.makeText(MainActivity.this, "参数正确", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(MainActivity.this, Main2Activity.class);
+                            String downloadfilefromserver = updownfile.set_DownCsvFileName(outputfiledir);
+                            //转界面 传参数 和 已下载的特征文件地址
+                            intent.putExtra("downloadfeaturefilefromserver", downloadfilefromserver);
+                            intent.putExtra("uploaduseridtoserverurl", t5.getText().toString());
+                            intent.putExtra("t0", t0.getText().toString());
+                            intent.putExtra("t1", t1.getText().toString());
+                            intent.putExtra("t2", t2.getText().toString());
+                            startActivity(intent);
                     }
+                    break;
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 break;
             case R.id.bt_downinfofile://下载Info
-                String infourl=t3.getText().toString();
-                Toast.makeText(this, "url"+infourl,3000).show();
+                String infourl = t3.getText().toString();
 //                String get_url="http://youkangbao.cn/ykb/back/face/download.php";
-                info_downfilename=updownfile.load_DownInfoTxtFromServer(infourl,outputfiledir);
-                Log.i("downfeature","sdfs");
                 try {
-                    readtxt.get_info(info_downfilename,t0,t1,t2,t3,t4,t5);
+                    info_downfilename = updownfile.load_DownInfoTxtFromServer(infourl, outputfiledir);
+                    readtxt.get_info(info_downfilename, t0, t1, t2, t3, t4, t5);
+                    Toast.makeText(this, "info文件下载成功", 3000).show();
 //            readtxt.save_info(filenametxt,t0,t1,t2,t3,t4,t5);
                 } catch (Exception e) {
-                    Toast.makeText(this, "url"+infourl,3000).show();
+                    Toast.makeText(this, "info文件没有下载成功", 3000).show();
                 }
                 break;
 
             case R.id.bt_downfeature://下载featurebiao
-                String url=t4.getText().toString();
-                Toast.makeText(this, "url"+url,3000).show();
+                String url = t4.getText().toString();
+                try {
 //                String get_url="http://youkangbao.cn/ykb/back/face/download.php";
-                feature_downfilename=updownfile.load_DownCsvFileFromServer(url,outputfiledir);
-                Log.i("downfeature","sdfs");
+                    feature_downfilename = updownfile.load_DownCsvFileFromServer(url, outputfiledir);
+                    Toast.makeText(this, "feature文件下载成功", 3000).show();
+
+                } catch (Exception e)
+                {
+                    Toast.makeText(this, "feature文件没有下载成功", 3000).show();
+
+                }
+
+
                 break;
 
             case R.id.bt_deletefeature://删除所有downloadfiledir
@@ -270,14 +250,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case  R.id.bt_senttoserver://向服务器发送签到ID
                 //String url1="http://youkangbao.cn/ykb/back/checkin/add.php";
+                try{
                 String uploadurl=t5.getText().toString();
                 int idnumber=Integer.parseInt(et_senttoserver.getText().toString());
                 updownfile.uploadDataToServer(uploadurl,idnumber);
+                    Toast.makeText(this, "向服务器传送签到ID成功",3000).show();
+                }
+                catch (Exception e)
+                {
+                    Toast.makeText(this, "向服务器传送签到ID失败",3000).show();
+                }
                 break;
 
 
             case R.id.bt_open://打开串口 继电器
-                open_door();
+                try {
+                    open_door();
+                    Toast.makeText(this, "打开继电器成功",3000).show();
+                }catch (Exception e )
+                {
+                    Toast.makeText(this, "打开继电器失败",3000).show();
+                }
                 break;
 
 

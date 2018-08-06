@@ -1,5 +1,6 @@
 package com.example.todrip.shebei_test2;
 
+import android.annotation.SuppressLint;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -17,8 +18,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
@@ -28,7 +31,13 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 
-import com.wits.serialport.SerialPort;
+import android.media.MediaPlayer;
+
+import com.example.todrip.shebei_test2.FaceFeature;
+import com.example.todrip.shebei_test2.Facenet;
+import com.example.todrip.shebei_test2.MTCNN;
+import com.example.todrip.shebei_test2.R;
+import com.example.todrip.shebei_test2.Utils;
 import com.wits.serialport.SerialPortManager;
 
 public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Callback, Camera.PreviewCallback {
@@ -48,16 +57,17 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
     public int t1;
     public int t2;
     public double t3;
+    public String t4;
     public  double threshold;
     public boolean is_face;
     public double result_score;
     public int result_index;
     public MediaPlayer player;
+    public String upserverurl;
+    public String featurefilename;
+    public int model_number;
     public int[] user_idlist;
     public float[][] user_featuerlist;
-    public UpDownfile updownfile=new UpDownfile();
-    public String serverurl;
-    public int model_number;
 
     //继电器
     private SerialPortManager mSerialPortManager;
@@ -76,17 +86,14 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         t1 = Integer.parseInt(getIntent().getStringExtra("t0"));
         t2 = Integer.parseInt(getIntent().getStringExtra("t1"));
         t3 = Double.parseDouble(getIntent().getStringExtra("t2"));
-        //从服务器上下载的文件地址
-        String filename = getIntent().getStringExtra("downloadfeaturefilefromserver");//下载文件
-        //获取日志上传网址
-        serverurl=getIntent().getStringExtra("uploaduseridtoserverurl");
+        featurefilename = getIntent().getStringExtra("downloadfeaturefilefromserver");//下载文件
+        upserverurl=getIntent().getStringExtra("uploaduseridtoserverurl");
 
         threshold = t3;
         //人脸识别部分
         mtcnn = new MTCNN(getAssets());
         facenet = new Facenet(getAssets());
-
-        //chengtao预加载所有的人脸特征
+        //预加载所有的人脸特征
         //先获得assets中jpg文件夹下所有的文件名称
 //        AssetManager assetManager = getAssets();
 //        try {
@@ -98,12 +105,10 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
 //        ff_list = new FaceFeature[file_list.length];
 //        //获取数据中的人脸特征
 //        get_FaceFeature();
-        //chentao end
 
-
-        File objFile = new File(filename);
+        File objFile = new File(featurefilename);
         if (!objFile.exists()) {   //文件不存在,默认asset中的文件
-          model_number=0;
+            model_number=0;
             //        try {
             AssetManager assetManager = getAssets();
             try {
@@ -122,8 +127,8 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             model_number=1;
             ReadCsv readCsv=new ReadCsv();
             try {
-                user_idlist=readCsv.get_UserId(filename);
-                user_featuerlist=readCsv.get_UserFeature(filename);
+                user_idlist=readCsv.get_UserId(featurefilename);
+                user_featuerlist=readCsv.get_UserFeature(featurefilename);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -131,17 +136,6 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             Log.i("user_idlist", Arrays.toString(user_featuerlist[0]));
             Log.i("user_featurelist", user_featuerlist[0].length+"");
         }
-
-//////        读特征
-//        ReadCsv readCsv=new ReadCsv();
-//        try {
-//            user_idlist=readCsv.get_UserId(filename);
-//            user_featuerlist=readCsv.get_UserFeature(filename);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        Log.i("user_idlist", Arrays.toString(user_featuerlist[0]));
-//        Log.i("user_featurelist", user_featuerlist[0].length+"");
 
 
 
@@ -153,9 +147,8 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         timer_list = true;  //timert_list true来表示当前执行计时器1，否则执行计时器2
         star_picture_timer1();
 
-
-        handler = new Handler();
-        mSerialPortManager = new SerialPortManager();
+//        handler = new Handler();
+//        mSerialPortManager = new SerialPortManager();
         //串口4，继电器控制
 //        SerialPort serialPort4 = null;
 //        try {
@@ -165,7 +158,6 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
 //        }
 //        mInputStream4 = serialPort4.getInputStream();
 //        mOutputStream4 = serialPort4.getOutputStream();
-
 
 
     }
@@ -188,14 +180,14 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         try{
-            mCamera = Camera.open(0);
+            mCamera = Camera.open(1);
         }catch (Exception e){
-            e.printStackTrace();
-            mCamera=Camera.open(0);
+//            e.printStackTrace();
+            mCamera=Camera.open(1);
         }
         try {
             mCamera.setPreviewDisplay(mHolder);
-            mCamera.setDisplayOrientation(270);
+            mCamera.setDisplayOrientation(90);
             //mCamera.setOneShotPreviewCallback(MainActivity.this);
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.setPreviewSize(640, 480);
@@ -220,6 +212,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
     }
 
     //每次向相机发送获取一帧的指令所执行的操作
+    @SuppressLint("WrongConstant")
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
         byte[] rawImage;
@@ -245,7 +238,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
 
         //旋转图像
         Matrix m = new Matrix();
-        m.postRotate(90);
+        m.postRotate(270);
         bitmap1 = Bitmap.createBitmap(bitmap1, 0, 0, bitmap1.getWidth(), bitmap1.getHeight(), m, true);
         //镜像
         m.setScale(-1,1);
@@ -263,8 +256,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         if(ff1 == null)
         {
             is_face = false;//当前的图片中不存在人脸
-            Toast.makeText(Main2Activity.this,"没有拍到人",Toast.LENGTH_SHORT).show();
-
+            Toast.makeText(Main2Activity.this,"没有拍到人",1000).show();
             //通过timer_list来判断现在正在运行的是哪个计时器
             if(timer_list == true)
             {
@@ -285,6 +277,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             }else {
                 get_result_excel(ff1);
             }
+
             boolean face_pass = get_visiable(result_score);
             if (face_pass == true) //验证通过,倒计时t2s
             {
@@ -457,7 +450,6 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         return;
     }
 
-
     //在主线程获取结果并且显示结果 访问的是excel表
     public void get_result_excel(FaceFeature ff1) {
         //(4)比较
@@ -488,34 +480,39 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
     }
 
 
-
-
-
+    @SuppressLint("WrongConstant")
     public boolean get_visiable(double score)
     {
         if (score>=0 && score<threshold)
         {
             if (model_number==1) {
                 //TODO 先开门 发声音 传日志
-                Toast.makeText(Main2Activity.this, "数据中的人", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Main2Activity.this, "数据中的人",1000).show();
                 //传日志
-                open_door();//打开继电器
-                get_pass();//打开声音
-            updownfile.uploadDataToServer(serverurl,user_idlist[result_index]);//上传日志userid
+                try {
+//                    open_door();//打开继电器
+                    get_pass();//打开声音
+                    UpDownfile updownfile = new UpDownfile();
+                    updownfile.uploadDataToServer(upserverurl, user_idlist[result_index]);//上传日志userid
+                }catch (Exception e){
+                    Toast.makeText(Main2Activity.this, "签到信息没有上传成功", 1000).show();
+                }
             }
             else if (model_number==0){
-                Toast.makeText(Main2Activity.this, "使用默认数据库，是默认数据库中的人", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Main2Activity.this, "使用默认数据库，是默认数据库中的人", 1000).show();
+                get_pass();//打开声音
             }
             return true;
         }
         else
         {
             get_verification();
-            Toast.makeText(Main2Activity.this,"拍到人但不是数据库中的人",Toast.LENGTH_SHORT).show();
+            Toast.makeText(Main2Activity.this,"拍到人但不是数据库中的人",1000).show();
 
             return false;
         }
     }
+
     //获取通过的声音
     public void get_pass(){
         if(player != null)
@@ -558,9 +555,10 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         }
     }
 
+    @SuppressLint("WrongConstant")
     public void open_door() {
         if (mOutputStream4 == null) {
-            Toast.makeText(this, "请先打开串口", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "请先打开串口", 1000).show();
             return;
         }
         try {
@@ -579,5 +577,6 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             e.printStackTrace();
         }
     }
-}
 
+
+}
