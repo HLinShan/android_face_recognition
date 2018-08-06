@@ -1,20 +1,23 @@
 package com.example.todrip.shebei_test2;
 import android.util.Log;
-
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
+import java.io.InputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Excelop {
@@ -126,10 +129,9 @@ public class Excelop {
 
     ////// case simple  自己做的测试时 做一个case
     //传入一个simple feature 是一维数组
-
-    public void write_ExcelFilefacefeture(String outputfiledir,int user_ID,String user_Name,float feature[]){
+    public void write_ExcelFilefacefeture(String outputfiledir,int user_ID,float feature[]){
         System.out.println("进入simplefile !");
-        String simple_excelfilename=outputfiledir+"1111"+".xlsx";
+        String simple_excelfilename=outputfiledir+"22people"+".xlsx";
         try {
             File objFile = new File(simple_excelfilename);
             XSSFWorkbook workbook = null;
@@ -172,8 +174,8 @@ public class Excelop {
 
             Cell cell0 = row.createCell(0);
             cell0.setCellValue(user_ID);
-            Cell cell1 = row.createCell(1);
-            cell1.setCellValue(user_Name);
+//            Cell cell1 = row.createCell(1);
+//            cell1.setCellValue(user_Name);
 
 //            Cell cell2 = row.createCell(2);
 //            cell2.setCellValue(get_userfeature[0]);
@@ -185,10 +187,10 @@ public class Excelop {
 
             Cell cell2;
             int featurenum=feature.length;
-            for (int i = 2; i < 2+featurenum; i++)
+            for (int i = 1; i < 1+featurenum; i++)
             {
                 cell2 = row.createCell(i);
-                cell2.setCellValue(feature[i-2]);
+                cell2.setCellValue(feature[i-1]);
 
             }
 
@@ -211,30 +213,11 @@ public class Excelop {
 
 
 
-
-
-
 //    DOWN USER INFO EXCEL  AND READ EXCEL retuen some infomation
 
-    //设置每个月下载的用户信息xlsx的名称
-    public String set_DownExcelFileName(String outputfiledir){
-        String filename;
-       filename=year +""+ month +"UserInfo_downloadfile"+".xlsx";
-        String outputFileName=outputfiledir +filename;
-        return outputFileName;
-    }
 
 
 
-
-    //TODO 下载文件操作TODO x下载 按钮
-    public String load_DownExcelFromServer(String serverurl,String outputfiledir){
-
-        String load_downexcelfile=set_DownExcelFileName(outputfiledir);
-
-        UpDownfile.downloadFile(serverurl, new File(load_downexcelfile));
-        return load_downexcelfile;
-    }
 
 
 
@@ -265,9 +248,7 @@ public class Excelop {
             return null;
 
         }
-
-
-    }
+        }
     //2从服务器下载excel读取特征值 用二维数组返回 从第1列开始
     public  float[][] get_ExcelFileUserFeature(String excelFile ) {
         float[][] get_exceluserfeature;
@@ -286,10 +267,10 @@ public class Excelop {
             for (int i = sheet.getFirstRowNum(); i < sheet.getLastRowNum(); i++) {
                 row = sheet.getRow(i);
                 get_exceluserfeature[i] = new float[row.getLastCellNum()];
-                for (int j = 2; j < row.getLastCellNum(); j++) {
+                for (int j = 1; j < row.getLastCellNum(); j++) {
                     cell = row.getCell(j);
                     value = (float) cell.getNumericCellValue();
-                    get_exceluserfeature[i][j-2] = value;
+                    get_exceluserfeature[i][j-1] = value;
 
                 }
             }
@@ -300,21 +281,8 @@ public class Excelop {
         }
     }
 
-    //今天打开此文件夹找到相应的服务器上下载下来的excel
 
-    public String get_ExcelFileFromLocal(String outputfiledir){
-        String get_downexcelfile=set_DownExcelFileName(outputfiledir);
 
-        File objFile = new File(get_downexcelfile);
-        if (!objFile.exists()) {
-
-            System.out.println("这个月没有下载相应的文件");
-            //TODO 去网站上下载对应的文件保存在这个问价夹中
-            //get_downexcelfile=load_DownExcelFromServer(outputfiledir)
-            return get_downexcelfile;
-        }//如果有这个文件的话返回绝对路径回去
-        return get_downexcelfile;
-    }
 
 
 

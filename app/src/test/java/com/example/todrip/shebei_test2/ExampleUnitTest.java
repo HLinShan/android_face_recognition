@@ -4,6 +4,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+
 import static org.junit.Assert.*;
 
 /**
@@ -14,19 +18,9 @@ import static org.junit.Assert.*;
 public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
-//        assertEquals(4, 2 + 2);
-        try {
-            JSONObject Lan1 = new JSONObject();//实例一个lan1的JSON对象
+        assertEquals(4, 2 + 2);
 
-            Lan1.put("id",123456);
-            Lan1.put("checktime","2018070845");
-            //UpDownfile.uploadJson("http://youkangbao.cn/ykb/back/checkin/add.php",Lan1);
-            System.out.println(Lan1.toString());
-
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
 
     }
 
-}
