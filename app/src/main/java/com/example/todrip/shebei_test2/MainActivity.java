@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button bt_downinfofile;
     EditText et_senttoserver;
     public EditText t0,t1,t2,t3,t4,t5;
-//    public SharedPreferences sp;
+    private static Toast myToast;
 
 
     public UpDownfile updownfile=new UpDownfile();
@@ -96,10 +96,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bt_senttoserver.setOnClickListener(this);
 
 
-        //继电器
-//        handler = new Handler();
-//        mSerialPortManager = new SerialPortManager();
-//        //串口4，继电器控制
+//        继电器
+        handler = new Handler();
+        mSerialPortManager = new SerialPortManager();
+        //串口4，继电器控制
 //        SerialPort serialPort4 = null;
 //        try {
 //            serialPort4 = mSerialPortManager.getSerialPort4();
@@ -108,15 +108,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        }
 //        mInputStream4 = serialPort4.getInputStream();
 //        mOutputStream4 = serialPort4.getOutputStream();
-        //tiaozhuan
 
-//        init_machine();
+
+
 
 
         //下载info和feature
         try {
         String infourl=t3.getText().toString();
-//        Toast.makeText(this, "url"+infourl,3000).show();
+
         info_downfilename=updownfile.load_DownInfoTxtFromServer(infourl,outputfiledir);
         File info_file=new File(info_downfilename);
         if(info_file.exists()){//如果文件存在读取文件
@@ -125,7 +125,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         feature_downfilename = updownfile.load_DownCsvFileFromServer(downloadurl, outputfiledir);
         }catch (Exception e1)
         {//如果下载文件有异常就使用默认的。
-            Toast.makeText(this, "下载Info和feature文件异常，将使用默认配置",3000).show();
+            toast(MainActivity.this,"下载Info和feature文件异常，将使用默认配置");
+
         }
         //如果feature 和 info 都在的话就跳转到下一个界面人脸识别
         int para_result;
@@ -134,21 +135,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //根据返回的int在toast中输出结果
             switch (para_result){
                 case 1:
-                    Toast.makeText(MainActivity.this,"计时器1的有效设置范围为1-10秒",Toast.LENGTH_SHORT).show();
+                    toast(MainActivity.this,"计时器1的有效设置范围为1-10秒");
                     break;
                 case 2:
-                    Toast.makeText(MainActivity.this,"计时器2的有效设置范围为1-10秒",Toast.LENGTH_SHORT).show();
+                    toast(MainActivity.this,"计时器2的有效设置范围为1-10秒");
+
                     break;
                 case 3:
-                    Toast.makeText(MainActivity.this,"阈值的有效设置范围为0-1.1",Toast.LENGTH_SHORT).show();
+                    toast(MainActivity.this,"阈值的有效设置范围为0-1.1");
+
                     break;
                 case 4:
-                    Toast.makeText(MainActivity.this,"参数正确",Toast.LENGTH_SHORT).show();
+                    toast(MainActivity.this,"参数正确");
                     Intent intent = new Intent(MainActivity.this,Main2Activity.class);
                     //传递字符串
 //                String passString = et_geturl.getText().toString();
                     //给第二个界面传 文件地址
                     String downloadfilefromserver=updownfile.set_DownCsvFileName(outputfiledir);
+                    File file=new File(downloadfilefromserver);
+                    if (file.exists()){
+                        toast(MainActivity.this,"feature文件已下载");
+
+                    }
+                    else{
+                        toast(MainActivity.this,"feature文件未下载，使用默认数据库");
+
+                    }
                         //转界面 传参数 和 已下载的特征文件地址
                         intent.putExtra("downloadfeaturefilefromserver", downloadfilefromserver);
                         intent.putExtra("uploaduseridtoserverurl", t5.getText().toString());
@@ -179,18 +191,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     //根据返回的int在toast中输出结果
                     switch (para_result) {
                         case 1:
-                            Toast.makeText(MainActivity.this, "计时器1的有效设置范围为1-10秒", Toast.LENGTH_SHORT).show();
+                            toast(MainActivity.this,"计时器1的有效设置范围为1-10秒");
                             break;
                         case 2:
-                            Toast.makeText(MainActivity.this, "计时器2的有效设置范围为1-10秒", Toast.LENGTH_SHORT).show();
+                            toast(MainActivity.this,"计时器2的有效设置范围为1-10秒");
                             break;
                         case 3:
-                            Toast.makeText(MainActivity.this, "阈值的有效设置范围为0-1.1", Toast.LENGTH_SHORT).show();
+                            toast(MainActivity.this,"阈值的有效设置范围为0-1.1");
                             break;
                         case 4:
-                            Toast.makeText(MainActivity.this, "参数正确", Toast.LENGTH_SHORT).show();
+                            toast(MainActivity.this,"参数正确");
+
                             Intent intent = new Intent(MainActivity.this, Main2Activity.class);
                             String downloadfilefromserver = updownfile.set_DownCsvFileName(outputfiledir);
+                            File file=new File(downloadfilefromserver);
+                            if (file.exists()){
+
+                                toast(MainActivity.this,"feature文件已下载");
+                            }
+                            else{
+
+                                toast(MainActivity.this,"feature文件未下载，使用默认数据库");
+
+                            }
                             //转界面 传参数 和 已下载的特征文件地址
                             intent.putExtra("downloadfeaturefilefromserver", downloadfilefromserver);
                             intent.putExtra("uploaduseridtoserverurl", t5.getText().toString());
@@ -202,7 +225,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     break;
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    toast(MainActivity.this,"出现异常，不能跳跳转到人脸识别界面");
+
                 }
                 break;
             case R.id.bt_downinfofile://下载Info
@@ -211,10 +235,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     info_downfilename = updownfile.load_DownInfoTxtFromServer(infourl, outputfiledir);
                     readtxt.get_info(info_downfilename, t0, t1, t2, t3, t4, t5);
-                    Toast.makeText(this, "info文件下载成功", 3000).show();
+                    toast(MainActivity.this,"info文件下载成功");
 //            readtxt.save_info(filenametxt,t0,t1,t2,t3,t4,t5);
                 } catch (Exception e) {
-                    Toast.makeText(this, "info文件没有下载成功", 3000).show();
+                    toast(MainActivity.this,"info文件没有下载成功");
+
                 }
                 break;
 
@@ -223,11 +248,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
 //                String get_url="http://youkangbao.cn/ykb/back/face/download.php";
                     feature_downfilename = updownfile.load_DownCsvFileFromServer(url, outputfiledir);
-                    Toast.makeText(this, "feature文件下载成功", 3000).show();
+
+                    toast(MainActivity.this,"feature文件下载成功");
+                    File file=new File(feature_downfilename);
+                    if(!file.exists()) {
+
+                        toast(MainActivity.this, "feature文件没有下载成功");
+                    }
+
 
                 } catch (Exception e)
                 {
-                    Toast.makeText(this, "feature文件没有下载成功", 3000).show();
+                    File file=new File(feature_downfilename);
+                    if(!file.exists()) {
+
+                        toast(MainActivity.this, "feature文件没有下载成功");
+                    }
+
 
                 }
 
@@ -242,9 +279,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 //如果文件删除结束
                 if(updownfile.del_AllFiles(new File(outputfiledir))){
-                    Toast.makeText(this, "目标文件已被删除",3000).show();
+
+                    toast(MainActivity.this,"目标文件已被删除");
+
                 }else {
-                    Toast.makeText(this, "目标文件夹没有文件",3000).show();
+
+                    toast(MainActivity.this,"目标文件夹没有目标文件");
+
                 };
                 break;
 
@@ -254,11 +295,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String uploadurl=t5.getText().toString();
                 int idnumber=Integer.parseInt(et_senttoserver.getText().toString());
                 updownfile.uploadDataToServer(uploadurl,idnumber);
-                    Toast.makeText(this, "向服务器传送签到ID成功",3000).show();
+
+                    toast(MainActivity.this,"向服务器传送签到ID成功");
+
                 }
                 catch (Exception e)
                 {
-                    Toast.makeText(this, "向服务器传送签到ID失败",3000).show();
+
+                    toast(MainActivity.this,"向服务器传送签到ID失败");
+
                 }
                 break;
 
@@ -266,10 +311,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bt_open://打开串口 继电器
                 try {
                     open_door();
-                    Toast.makeText(this, "打开继电器成功",3000).show();
+                    toast(MainActivity.this,"打开继电器成功");
+
                 }catch (Exception e )
                 {
-                    Toast.makeText(this, "打开继电器失败",3000).show();
+//                    Toast.makeText(this, "打开继电器失败",1000).show();
+                    toast(MainActivity.this,"打开继电器失败");
                 }
                 break;
 
@@ -279,7 +326,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void open_door(){
         if (mOutputStream4 == null) {
-            Toast.makeText(this, "请先打开串口", Toast.LENGTH_SHORT).show();
+
+//            toast(MainActivity.this,"请先打开串口");
             return;
         }
         try {
@@ -294,8 +342,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             );
             mOutputStream4.write(bytes);
 
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            toast(MainActivity.this,"出现异常不能打开继电器");
+
         }
     }
     //获取存放下载的代码外部内存地址environment+包名
@@ -315,7 +364,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public String get_OutPutDownLoadDir(){
         String environmentdir=get_EnvironmentDir();
         String get_outputfiledir;
-
         get_outputfiledir=environmentdir+"DownloadFileDir";
         File outputfiledir=new File(get_outputfiledir);
         if (!outputfiledir.exists()) {
@@ -324,66 +372,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return get_outputfiledir + File.separatorChar;
     }
-
-    @SuppressLint("WrongConstant")
-    public void init_machine() {
-//        File objFile0 = new File(outputfiledir);
-//        if (!objFile0.exists()) {   //文件不存在
-//        }
-//        //如果文件删除结束
-//        if(updownfile.del_AllFiles(new File(outputfiledir))){
-//            Toast.makeText(this, "目标文件已被删除",3000).show();
-//        }else {
-//            Toast.makeText(this, "目标文件夹没有文件",3000).show();
-//        }
-        //下载info
-        String infourl=t3.getText().toString();
-        Toast.makeText(this, "url"+infourl,3000).show();
-//                String get_url="http://youkangbao.cn/ykb/back/face/download.php";
-        info_downfilename=updownfile.load_DownInfoTxtFromServer(infourl,outputfiledir);
-        Log.i("downfeature","sdfs");
-        try {
-            readtxt.get_info(info_downfilename,t0,t1,t2,t3,t4,t5);
-            //下载feature
-            String url=t4.getText().toString();
-            Toast.makeText(this, "url"+url,3000).show();
-            feature_downfilename=updownfile.load_DownCsvFileFromServer(url,outputfiledir);
-            Log.i("downfeature","sdfs");
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void toast(Context context, String text){
+        if (myToast != null) {
+            myToast.cancel();
+            myToast=Toast.makeText(context,text,Toast.LENGTH_SHORT);
+        }else{
+            myToast=Toast.makeText(context,text,Toast.LENGTH_SHORT);
         }
-
+        myToast.show();
     }
-    @SuppressLint("WrongConstant")
-    public String copy_AssetsDir2Phone(Activity activity, String filePath) {
-        UpDownfile updownfile = new UpDownfile();
-        String downcsvfilename = updownfile.set_DownCsvFileName(outputfiledir);
-        try {
-            InputStream inputStream = activity.getAssets().open(filePath);
-            Log.i("filename1",downcsvfilename);
-            File file=new File(downcsvfilename);
-            if (!file.exists()) {
-                FileOutputStream fos = new FileOutputStream(file);
-                int len = -1;
-                byte[] buffer = new byte[1024];
-                while ((len = inputStream.read(buffer)) != -1) {
-                    fos.write(buffer, 0, len);
-                }
-                fos.flush();
-                inputStream.close();
-                fos.close();
-                Toast.makeText(this, "url复制下载完毕",3000).show();
-
-            } else {
-                Toast.makeText(this, "url已存在不需要下载",3000).show();;
-            }
-            return downcsvfilename;
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        return downcsvfilename;
-    }
-
 
 
 }

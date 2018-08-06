@@ -1,6 +1,7 @@
 package com.example.todrip.shebei_test2;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -38,6 +39,7 @@ import com.example.todrip.shebei_test2.Facenet;
 import com.example.todrip.shebei_test2.MTCNN;
 import com.example.todrip.shebei_test2.R;
 import com.example.todrip.shebei_test2.Utils;
+import com.wits.serialport.SerialPort;
 import com.wits.serialport.SerialPortManager;
 
 public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Callback, Camera.PreviewCallback {
@@ -74,8 +76,10 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
     private InputStream mInputStream4;
     private OutputStream mOutputStream4;
     private Handler handler;
+    private static Toast myToast;
 
 
+    @SuppressLint("WrongConstant")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,7 +118,8 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             try {
                 file_list = assetManager.list("jpg");
             } catch (IOException e) {
-                e.printStackTrace();
+                toast(Main2Activity.this,"获取默认数据库异常");
+
             }
             face_bitmap = new Bitmap[file_list.length];
             ff_list = new FaceFeature[file_list.length];
@@ -130,11 +135,12 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
                 user_idlist=readCsv.get_UserId(featurefilename);
                 user_featuerlist=readCsv.get_UserFeature(featurefilename);
             } catch (IOException e) {
-                e.printStackTrace();
+                toast(Main2Activity.this,"feature文件解析异常，请下载正确的feature文件");
+
             }
-            Log.i("xxx","用feature中的数据库 ");
-            Log.i("user_idlist", Arrays.toString(user_featuerlist[0]));
-            Log.i("user_featurelist", user_featuerlist[0].length+"");
+//            Log.i("xxx","用feature中的数据库 ");
+//            Log.i("user_idlist", Arrays.toString(user_featuerlist[0]));
+//            Log.i("user_featurelist", user_featuerlist[0].length+"");
         }
 
 
@@ -147,9 +153,9 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         timer_list = true;  //timert_list true来表示当前执行计时器1，否则执行计时器2
         star_picture_timer1();
 
-//        handler = new Handler();
-//        mSerialPortManager = new SerialPortManager();
-        //串口4，继电器控制
+        handler = new Handler();
+        mSerialPortManager = new SerialPortManager();
+//        串口4，继电器控制
 //        SerialPort serialPort4 = null;
 //        try {
 //            serialPort4 = mSerialPortManager.getSerialPort4();
@@ -177,13 +183,14 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
     }
     //======================================================================================================================
     //以下几个为显示预览界面必要的回调函数
+    @SuppressLint("WrongConstant")
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         try{
             mCamera = Camera.open(1);
         }catch (Exception e){
 //            e.printStackTrace();
-            mCamera=Camera.open(1);
+            mCamera=Camera.open(0);
         }
         try {
             mCamera.setPreviewDisplay(mHolder);
@@ -193,7 +200,8 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             parameters.setPreviewSize(640, 480);
             mCamera.startPreview();
         } catch (IOException e) {
-            e.printStackTrace();
+            toast(Main2Activity.this,"摄像头异常，请打开摄像头权限");
+
         }
     }
 
@@ -256,7 +264,8 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         if(ff1 == null)
         {
             is_face = false;//当前的图片中不存在人脸
-            Toast.makeText(Main2Activity.this,"没有拍到人",1000).show();
+            Log.e("main2Activity", "onPreviewFarame: "+System.currentTimeMillis() );
+            toast(Main2Activity.this,"没有拍到人");
             //通过timer_list来判断现在正在运行的是哪个计时器
             if(timer_list == true)
             {
@@ -394,9 +403,9 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             InputStream is = asm.open("jpg/" + filename);
             bitmap = BitmapFactory.decodeStream(is);
             is.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("MainActivity", "[*]failed to open " + filename);
-            e.printStackTrace();
+//
             return null;
         }
         return Utils.copyBitmap(bitmap);
@@ -458,7 +467,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         int user_index = -1;
         for (int i = 0; i < user_idlist.length; i++) {
             score = ff1.compare_float(user_featuerlist[i]);
-            if (score >= 0 && score < 1.1) {
+            if (score >= 0 && score < threshold) {
                 if (score < min_score) {
                     min_score = score;
                     user_index = i;
@@ -487,28 +496,37 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         {
             if (model_number==1) {
                 //TODO 先开门 发声音 传日志
-                Toast.makeText(Main2Activity.this, "数据中的人",1000).show();
+//
+                toast(Main2Activity.this,"数据库中得人");
+
                 //传日志
                 try {
+                    Log.e("main2Activity", "get_visiable: open_door--"+System.currentTimeMillis() );
 //                    open_door();//打开继电器
                     get_pass();//打开声音
                     UpDownfile updownfile = new UpDownfile();
                     updownfile.uploadDataToServer(upserverurl, user_idlist[result_index]);//上传日志userid
+
                 }catch (Exception e){
-                    Toast.makeText(Main2Activity.this, "签到信息没有上传成功", 1000).show();
+//
+                    toast(Main2Activity.this,"签到信息没有上传成功");
                 }
+
             }
             else if (model_number==0){
-                Toast.makeText(Main2Activity.this, "使用默认数据库，是默认数据库中的人", 1000).show();
+//
+                toast(Main2Activity.this,"使用默认数据库，是默认数据库中的人");
                 get_pass();//打开声音
+//                open_door();//打开继电器
+                Log.e("main2Activity", "get_visiable: open_door2--"+System.currentTimeMillis() );
             }
             return true;
         }
         else
         {
             get_verification();
-            Toast.makeText(Main2Activity.this,"拍到人但不是数据库中的人",1000).show();
-
+//
+            toast(Main2Activity.this,"拍到人但不是数据库中的人");
             return false;
         }
     }
@@ -530,7 +548,9 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             player.start();
 
         } catch (IOException e) {
-            e.printStackTrace();
+
+            toast(Main2Activity.this,"声音获取异常");
+
         }
     }
 
@@ -551,14 +571,16 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             player.start();
 
         } catch (IOException e) {
-            e.printStackTrace();
+
+            toast(Main2Activity.this,"声音获取异常");
         }
     }
 
     @SuppressLint("WrongConstant")
     public void open_door() {
         if (mOutputStream4 == null) {
-            Toast.makeText(this, "请先打开串口", 1000).show();
+
+            toast(Main2Activity.this,"请打开串口");
             return;
         }
         try {
@@ -574,9 +596,19 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             mOutputStream4.write(bytes);
 
         } catch (IOException e) {
-            e.printStackTrace();
+            toast(Main2Activity.this,"继电器打开异常");
+
         }
     }
 
 
+    public static void toast(Context context, String text){
+        if (myToast != null) {
+            myToast.cancel();
+            myToast=Toast.makeText(context,text,Toast.LENGTH_SHORT);
+        }else{
+            myToast=Toast.makeText(context,text,Toast.LENGTH_SHORT);
+        }
+        myToast.show();
+    }
 }

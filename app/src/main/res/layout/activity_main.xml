@@ -173,9 +173,9 @@
         android:layout_width="554dp"
         android:layout_height="53dp"
 
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="273dp"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="295dp"
         android:orientation="horizontal">
 
         <TextView
@@ -202,9 +202,8 @@
         android:layout_width="348dp"
         android:layout_height="wrap_content"
 
-        android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="202dp"
+        android:layout_centerVertical="true"
         android:orientation="horizontal">
 
         <Button
@@ -223,7 +222,7 @@
 
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="156dp"
+        android:layout_marginBottom="297dp"
         android:orientation="horizontal">
 
         <Button
@@ -254,7 +253,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="88dp"
+        android:layout_marginBottom="202dp"
         android:orientation="horizontal">
 
         <EditText
@@ -282,7 +281,7 @@
         android:layout_alignParentBottom="true"
 
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="117dp"
         android:layout_marginStart="12dp"
         android:text="打开继电器" />
 
