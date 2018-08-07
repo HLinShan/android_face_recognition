@@ -207,6 +207,13 @@
         android:orientation="horizontal">
 
         <Button
+            android:id="@+id/bt_savapara"
+            android:layout_width="153dp"
+            android:layout_height="59dp"
+            android:layout_weight="1"
+            android:text="保存参数" />
+
+        <Button
             android:id="@+id/bt_startfacenet"
             android:layout_width="153dp"
             android:layout_height="59dp"

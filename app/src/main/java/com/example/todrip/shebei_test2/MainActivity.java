@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText et_senttoserver;
     public EditText t0,t1,t2,t3,t4,t5;
     private static Toast myToast;
+    //保存参数到apk中
+    public  Para para=new Para();
+    public SharedPreferences sp;
 
 
     public UpDownfile updownfile=new UpDownfile();
@@ -78,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bt_startfacenet = (Button) findViewById(R.id.bt_startfacenet);
         bt_open = findViewById(R.id.bt_open);
         bt_senttoserver = (Button) findViewById(R.id.bt_senttoserver);
+        bt_savepara=findViewById(R.id.bt_savapara);
 
         bt_downinfofile = findViewById(R.id.bt_downinfofile);
         t0 = (EditText) findViewById(R.id.ed1);//计时器1
@@ -94,6 +98,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bt_downinfofile.setOnClickListener(this);
         bt_open.setOnClickListener(this);
         bt_senttoserver.setOnClickListener(this);
+        bt_savepara.setOnClickListener(this);
+
+        sp = getSharedPreferences("User", Context.MODE_PRIVATE);
+        //每次开始获取之前保存的配置
+        para.get_para(sp,t0,t1,t2,t3,t4,t5);
 
 
 //        继电器
@@ -119,7 +128,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         info_downfilename=updownfile.load_DownInfoTxtFromServer(infourl,outputfiledir);
         File info_file=new File(info_downfilename);
-        if(info_file.exists()){//如果文件存在读取文件
+        if(info_file.exists()){//如果文件存在读取文件，能下载到info 就读取配置，否则使用默认的配置
             readtxt.get_info(info_downfilename,t0,t1,t2,t3,t4,t5);}
         String downloadurl = t4.getText().toString();
         feature_downfilename = updownfile.load_DownCsvFileFromServer(downloadurl, outputfiledir);
@@ -159,8 +168,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     else{
                         toast(MainActivity.this,"feature文件未下载，使用默认数据库");
-
                     }
+                    //保存参数 TODO
+                    para.save_para(sp,t0,t1,t2,t3,t4,t5);
+                    Log.i("para","保存para");
                         //转界面 传参数 和 已下载的特征文件地址
                         intent.putExtra("downloadfeaturefilefromserver", downloadfilefromserver);
                         intent.putExtra("uploaduseridtoserverurl", t5.getText().toString());
@@ -183,6 +194,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.bt_savapara:
+                int para_result_0 = para.save_para(sp,t0,t1,t2,t3,t4,t5);
+                Log.i("para","保存para");
+                //根据返回的int在toast中输出结果
+                switch (para_result_0){
+                    case 1:
+                        Toast.makeText(MainActivity.this,"计时器1的有效设置范围为1-10秒",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(MainActivity.this,"计时器2的有效设置范围为1-10秒",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 3:
+                        Toast.makeText(MainActivity.this,"阈值的有效设置范围为0-1.1",Toast.LENGTH_SHORT).show();
+                        break;
+                    case 4:
+                        Toast.makeText(MainActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
+                        break;
+                }
             case R.id.bt_startfacenet://转到打开摄像头第二个界面
                 int para_result;
                 try {
@@ -214,6 +243,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                                 toast(MainActivity.this,"feature文件未下载，使用默认数据库");
 
                             }
+                            //保存参数
+                            para.save_para(sp,t0,t1,t2,t3,t4,t5);
                             //转界面 传参数 和 已下载的特征文件地址
                             intent.putExtra("downloadfeaturefilefromserver", downloadfilefromserver);
                             intent.putExtra("uploaduseridtoserverurl", t5.getText().toString());

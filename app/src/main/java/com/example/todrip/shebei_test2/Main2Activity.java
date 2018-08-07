@@ -264,7 +264,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         if(ff1 == null)
         {
             is_face = false;//当前的图片中不存在人脸
-            Log.e("main2Activity", "onPreviewFarame: "+System.currentTimeMillis() );
+//            Log.e("main2Activity", "onPreviewFarame: "+System.currentTimeMillis() );
             toast(Main2Activity.this,"没有拍到人");
             //通过timer_list来判断现在正在运行的是哪个计时器
             if(timer_list == true)
@@ -501,7 +501,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
 
                 //传日志
                 try {
-                    Log.e("main2Activity", "get_visiable: open_door--"+System.currentTimeMillis() );
+//                    Log.e("main2Activity", "get_visiable: open_door--"+System.currentTimeMillis() );
 //                    open_door();//打开继电器
                     get_pass();//打开声音
                     UpDownfile updownfile = new UpDownfile();
