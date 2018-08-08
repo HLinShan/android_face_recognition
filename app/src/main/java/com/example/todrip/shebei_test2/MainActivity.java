@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //        SerialPort serialPort4 = null;
 //        try {
 //            serialPort4 = mSerialPortManager.getSerialPort4();
-//        } catch (IOException e) {
+//        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
 //        mInputStream4 = serialPort4.getInputStream();
@@ -181,8 +181,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         startActivity(intent);
                     break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            toast(MainActivity.this,"跳转界面异常");
         }
 
     }
@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Toast.makeText(MainActivity.this,"保存成功",Toast.LENGTH_SHORT).show();
                         break;
                 }
+                break;
             case R.id.bt_startfacenet://转到打开摄像头第二个界面
                 int para_result;
                 try {
@@ -255,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     break;
 
-                } catch (IOException e) {
+                } catch (Exception e) {
                     toast(MainActivity.this,"出现异常，不能跳跳转到人脸识别界面");
 
                 }
@@ -358,7 +359,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void open_door(){
         if (mOutputStream4 == null) {
 
-//            toast(MainActivity.this,"请先打开串口");
+            toast(MainActivity.this,"请先打开串口");
             return;
         }
         try {

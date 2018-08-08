@@ -97,12 +97,13 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
         //人脸识别部分
         mtcnn = new MTCNN(getAssets());
         facenet = new Facenet(getAssets());
+
         //预加载所有的人脸特征
         //先获得assets中jpg文件夹下所有的文件名称
 //        AssetManager assetManager = getAssets();
 //        try {
 //            file_list = assetManager.list("jpg");
-//        } catch (IOException e) {
+//        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
 //        face_bitmap = new Bitmap[file_list.length];
@@ -117,7 +118,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             AssetManager assetManager = getAssets();
             try {
                 file_list = assetManager.list("jpg");
-            } catch (IOException e) {
+            } catch (Exception e) {
                 toast(Main2Activity.this,"获取默认数据库异常");
 
             }
@@ -134,8 +135,9 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             try {
                 user_idlist=readCsv.get_UserId(featurefilename);
                 user_featuerlist=readCsv.get_UserFeature(featurefilename);
-            } catch (IOException e) {
+            } catch (Exception e) {
                 toast(Main2Activity.this,"feature文件解析异常，请下载正确的feature文件");
+//                finish();
 
             }
 //            Log.i("xxx","用feature中的数据库 ");
@@ -199,7 +201,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             Camera.Parameters parameters = mCamera.getParameters();
             parameters.setPreviewSize(640, 480);
             mCamera.startPreview();
-        } catch (IOException e) {
+        } catch (Exception e) {
             toast(Main2Activity.this,"摄像头异常，请打开摄像头权限");
 
         }
@@ -502,7 +504,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
                 //传日志
                 try {
 //                    Log.e("main2Activity", "get_visiable: open_door--"+System.currentTimeMillis() );
-//                    open_door();//打开继电器
+                    open_door();//打开继电器
                     get_pass();//打开声音
                     UpDownfile updownfile = new UpDownfile();
                     updownfile.uploadDataToServer(upserverurl, user_idlist[result_index]);//上传日志userid
@@ -517,7 +519,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
 //
                 toast(Main2Activity.this,"使用默认数据库，是默认数据库中的人");
                 get_pass();//打开声音
-//                open_door();//打开继电器
+                open_door();//打开继电器
                 Log.e("main2Activity", "get_visiable: open_door2--"+System.currentTimeMillis() );
             }
             return true;
@@ -547,7 +549,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             player.prepare();
             player.start();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
 
             toast(Main2Activity.this,"声音获取异常");
 
@@ -570,7 +572,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             player.prepare();
             player.start();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
 
             toast(Main2Activity.this,"声音获取异常");
         }
@@ -595,7 +597,7 @@ public class Main2Activity extends AppCompatActivity implements SurfaceHolder.Ca
             );
             mOutputStream4.write(bytes);
 
-        } catch (IOException e) {
+        } catch (Exception e) {
             toast(Main2Activity.this,"继电器打开异常");
 
         }
